@@ -18,14 +18,8 @@ public:
     Matrix() = default;
     ~Matrix() = default;
 
-    size_t Height() const;
-    size_t Width() const;
-
     T operator[] (size_t i) const;
     T& operator[] (size_t i);
-
-    template <typename = std::enable_if_t<N == M>>
-    T  Determinant () const;
 
     //operation with scalars
     template <typename T2, typename = std::enable_if_t<std::is_arithmetic_v<T2>>>
@@ -62,8 +56,23 @@ public:
     template<typename T2, size_t M2>
     auto operator* (const Matrix<T2, M, M2>& mult);
 
+    //boolean
+    template<typename T2, size_t N2, size_t M2>
+    int operator ==(const Matrix<T2, N2, M2>& i_matrix);
+
 
     Matrix<T, N, M>& operator= (const Matrix<T, N, M>& copy);
+
+
+    //mathods
+
+    size_t Height() const;
+    size_t Width() const;
+
+    template <typename = std::enable_if_t<N == M>>
+    T  Determinant() const;
+
+    Matrix<T, M, N> Transpose();
 };
 
 
@@ -325,4 +334,50 @@ std::ostream& operator<<(std::ostream& os, const Matrix<T, N, M>& out)
     return os;
 }
 
+template <typename T, size_t N, size_t M>
+template<typename T2, size_t N2, size_t M2>
+int Matrix<T, N, M>::operator ==(const Matrix<T2, N2, M2>& i_matrix)
+{
+    if constexpr (N != N2 || M != M2)
+    {
+        return 0;
+    }
+    else
+    {
+        for (size_t i = 0; i < N*M; i++)
+        {
+            if (this->m_matrix[i] != i_matrix[i])
+                return 0;
+
+        }
+        return 1;
+    }
+}
+
+template <typename T, size_t N, size_t M>
+Matrix<T, M, N> Matrix<T, N, M>::Transpose()
+{
+    if constexpr (N == 1 || M == 1)
+    {
+        Matrix<T, M, N> result;
+        for (size_t i = 0; i < M*N; i++)
+            result[i] = this->m_matrix[i];
+        
+        return result;
+    }
+    else
+    {
+        Matrix<T, M, N> result;
+        for (size_t i = 0; i < N; i++)
+            for (size_t j = 0; j < M; j++)
+            {
+                size_t oldInd = i * M + j;
+                size_t newInd = j * N + i;
+                result[j * N + i] = this->m_matrix[i * M + j];
+            }
+                
+
+        return result;
+    }
+}
 

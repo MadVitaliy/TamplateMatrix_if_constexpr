@@ -34,6 +34,11 @@ int main()
              << "a * 2 =\n" << a * 2 << std::endl
              << "a / 2.f =\n" << a / 2.f << std::endl;
 
+    auto temp = a.Transpose();
+    std::cout << "----------------------------" << std::endl
+        << "a =\n" << a << std::endl
+        << "transpose a =\n" << a.Transpose() << std::endl;
+
     std::cout << "----------------------------" << std::endl
             << "a =\n" << a << std::endl
             << "b =\n" << b << std::endl
