@@ -18,33 +18,33 @@ public:
     Matrix() = default;
     ~Matrix() = default;
 
-    T operator[] (size_t i) const;
+    const T& operator[] (size_t i) const;
     T& operator[] (size_t i);
 
     //operation with scalars
     template <typename T2, typename = std::enable_if_t<std::is_arithmetic_v<T2>>>
-    auto operator+ (const T2 add);
+    constexpr auto operator+ (const T2 add);
 
     template <typename T2, typename = std::enable_if_t<std::is_arithmetic_v<T2>>>
-    auto operator- (const T2 add);
+    constexpr auto operator- (const T2 add);
 
     template <typename T2, typename = std::enable_if_t<std::is_arithmetic_v<T2>>>
-    auto operator* (const T2 add);
+    constexpr auto operator* (const T2 add);
 
     template <typename T2, typename = std::enable_if_t<std::is_arithmetic_v<T2>>>
-    auto operator/ (const T2 add);
+    constexpr  auto operator/ (const T2 add);
 
     //template <typename T2>
     //friend auto operator= (const T2 add);
 
     //unitary operation 
-    Matrix<T, N, M>& operator++ (); //prefix
+    constexpr  Matrix<T, N, M>& operator++ (); //prefix
 
-    Matrix<T, N, M> operator++ (int); //postfix
+    constexpr Matrix<T, N, M> operator++ (int); //postfix
 
-    Matrix<T, N, M>& operator-- (); //prefix
+    constexpr  Matrix<T, N, M>& operator-- (); //prefix
 
-    Matrix<T, N, M> operator-- (int); //postfix
+    constexpr Matrix<T, N, M> operator-- (int); //postfix
 
     //binary operation between matrix
     template <typename T2>
@@ -61,16 +61,16 @@ public:
     int operator ==(const Matrix<T2, N2, M2>& i_matrix);
 
 
-    Matrix<T, N, M>& operator= (const Matrix<T, N, M>& copy);
+    constexpr Matrix<T, N, M>& operator= (const Matrix<T, N, M>& copy);
 
 
     //mathods
 
-    size_t Height() const;
-    size_t Width() const;
+    constexpr size_t Height() const;
+    constexpr size_t Width() const;
 
     template <typename = std::enable_if_t<N == M>>
-    T  Determinant() const;
+    constexpr T  Determinant() const;
 
     Matrix<T, M, N> Transpose();
 };
@@ -78,19 +78,19 @@ public:
 
 
 template <typename T, size_t N, size_t M>
-size_t Matrix<T, N, M>::Height() const
+constexpr size_t Matrix<T, N, M>::Height() const
 {
     return N;
 }
 template <typename T, size_t N, size_t M>
-size_t Matrix<T, N, M>::Width() const
+constexpr size_t Matrix<T, N, M>::Width() const
 {
     return M;
 }
 
 template <typename T, size_t N, size_t M>
 template <typename>
-T  Matrix<T, N, M>::Determinant() const
+constexpr T  Matrix<T, N, M>::Determinant() const
 {
     if constexpr (N == 1)
     {
@@ -98,12 +98,12 @@ T  Matrix<T, N, M>::Determinant() const
         //return (m_matrix[0] < 0 ? (-m_matrix[0]) : m_matrix[0]);
         return  m_matrix[0];
     }
-    else if (N == 2)
+    else if constexpr (N == 2)
     {
         std::cout << "Determinant for N=M = 2\n";
         return m_matrix[0] * m_matrix[3] - m_matrix[1] * m_matrix[2];
     }
-    else if (N == 3)
+    else if constexpr (N == 3)
     {
         std::cout << "Determinant for N=M = 3\n";
         return (m_matrix[0] * m_matrix[4] * m_matrix[8] + 
@@ -123,7 +123,7 @@ T  Matrix<T, N, M>::Determinant() const
 //operation with scalars
 template <typename T, size_t N, size_t M>
 template <typename T2, typename>
-auto Matrix<T, N, M>::operator+ (const T2 number)
+constexpr auto Matrix<T, N, M>::operator+ (const T2 number)
 {
     using resultType = decltype(std::declval<T>() + std::declval<T2>());
     Matrix<resultType, N, M> result;
@@ -137,7 +137,7 @@ auto Matrix<T, N, M>::operator+ (const T2 number)
 
 template <typename T, size_t N, size_t M>
 template <typename T2, typename>
-auto Matrix<T, N, M>::operator- (const T2 number)
+constexpr auto Matrix<T, N, M>::operator- (const T2 number)
 {
     using resultType = decltype(std::declval<T>() - std::declval<T2>());
     Matrix<resultType, N, M> result;
@@ -151,7 +151,7 @@ auto Matrix<T, N, M>::operator- (const T2 number)
 
 template <typename T, size_t N, size_t M>
 template <typename T2, typename>
-auto Matrix<T, N, M>::operator* (const T2 number)
+constexpr auto Matrix<T, N, M>::operator* (const T2 number)
 {
     using resultType = decltype(std::declval<T>()* std::declval<T2>());;
     Matrix<resultType, N, M> result;
@@ -165,7 +165,7 @@ auto Matrix<T, N, M>::operator* (const T2 number)
 
 template <typename T, size_t N, size_t M>
 template <typename T2, typename>
-auto Matrix<T, N, M>::operator/ (const T2 number)
+constexpr auto Matrix<T, N, M>::operator/ (const T2 number)
 {
     using resultType = decltype(std::declval<T>() / std::declval<T2>());
     Matrix<resultType, N, M> result;
@@ -183,7 +183,7 @@ auto Matrix<T, N, M>::operator/ (const T2 number)
 
 //unitary operation 
 template <typename T, size_t N, size_t M>
-Matrix<T, N, M>& Matrix<T, N, M>::operator++ () ////prefix
+constexpr Matrix<T, N, M>& Matrix<T, N, M>::operator++ () ////prefix
 {
     for (int i = 0; i < N * M; ++i)
     {
@@ -194,7 +194,7 @@ Matrix<T, N, M>& Matrix<T, N, M>::operator++ () ////prefix
 }
 
 template <typename T, size_t N, size_t M>
-Matrix<T, N, M> Matrix<T, N, M>::operator++ (int) //postfix
+constexpr Matrix<T, N, M> Matrix<T, N, M>::operator++ (int) //postfix
 {
     Matrix<T, N, M> temp = *this;
     for (int i = 0; i < N * M; ++i)
@@ -206,7 +206,7 @@ Matrix<T, N, M> Matrix<T, N, M>::operator++ (int) //postfix
 }
 
 template <typename T, size_t N, size_t M>
-Matrix<T, N, M>& Matrix<T, N, M>::operator-- () //prefix
+constexpr Matrix<T, N, M>& Matrix<T, N, M>::operator-- () //prefix
 {
     for (int i = 0; i < N * M; ++i)
     {
@@ -217,7 +217,7 @@ Matrix<T, N, M>& Matrix<T, N, M>::operator-- () //prefix
 }
 
 template <typename T, size_t N, size_t M>
-Matrix<T, N, M> Matrix<T, N, M>::operator-- (int) //postfix
+constexpr Matrix<T, N, M> Matrix<T, N, M>::operator-- (int) //postfix
 {
     Matrix<T, N, M> temp = *this;
     for (int i = 0; i < N * M; ++i)
@@ -283,14 +283,14 @@ auto Matrix<T, N, M>::operator*(const Matrix<T2, M, M2>& mult)
 }
 
 template <typename T, size_t N, size_t M>
-Matrix<T, N, M>& Matrix<T, N, M>::operator= (const Matrix<T, N, M>& copy)
+constexpr Matrix<T, N, M>& Matrix<T, N, M>::operator= (const Matrix<T, N, M>& copy)
 {
     this->m_matrix = copy.m_matrix;
     return *this;
 }
 
 template <typename T, size_t N, size_t M>
-T  Matrix<T, N, M>::operator[](size_t i) const
+const T& Matrix<T, N, M>::operator[](size_t i) const
 {
     return m_matrix[i];
 }
@@ -313,7 +313,7 @@ std::ostream& operator<<(std::ostream& os, const Matrix<T, N, M>& out)
             os << out[j] << ' ';
         os << '\n';
     }
-    else if (M == 1)
+    else if constexpr (M == 1)
     {
         os << "Output for M = 1\n";
         for (size_t i = 0; i < N; i++)
