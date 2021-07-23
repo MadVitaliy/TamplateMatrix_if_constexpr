@@ -10,16 +10,18 @@
 
 template <typename T, size_t N, size_t M>
 class Matrix {
-    template <typename T0, size_t N0, size_t M0>friend class Matrix;
+    template <typename T2, size_t N, size_t M>friend class Matrix;
+    template <typename T2, size_t M, size_t M2>friend class Matrix;
+    template <typename T2, size_t N2, size_t M2>friend class Matrix;
+    //T2, N2, M2
 
-   // friend std::ostream& operator<<(std::ostream& os, const Matrix<T, N, M>& out);
 private:
     std::array<T, N* M> m_matrix;
 public:
-
-
-
-    Matrix() = default;
+    Matrix() noexcept
+    {
+        m_matrix.fill(0);
+    };
     ~Matrix() = default;
 
     //operation with scalars
@@ -104,10 +106,6 @@ T& Matrix<T, N, M>::operator[](size_t i)
 {
     return m_matrix[i];
 }
-
-
-
-
 
 template <typename T, size_t N, size_t M>
 constexpr size_t Matrix<T, N, M>::Height() const
@@ -269,7 +267,7 @@ auto Matrix<T, N, M>::operator+ (const Matrix<T2, N, M>& add)
     Matrix<resultType, N, M> result;
 
     for (int i = 0; i < N * M; ++i)
-        result[i] = this->m_matrix[i] + add[i];
+        result[i] = this->m_matrix[i] + add.m_matrix[i];
 
     return result;
 }
@@ -282,7 +280,7 @@ auto Matrix<T, N, M>::operator- (const Matrix<T2, N, M>& sub)
     Matrix<resultType, N, M> result;
 
     for (int i = 0; i < N * M; ++i)
-        result[i] = this->m_matrix[i] - sub[i];
+        result[i] = this->m_matrix[i] - sub.m_matrix[i];
 
     return result;
 }
@@ -306,7 +304,7 @@ auto Matrix<T, N, M>::operator*(const Matrix<T2, M, M2>& mult)
             {
                 T temp1 = this->m_matrix[i * M + k];
                 T2 temp2 = mult[k * M2 + j];
-                temp += this->m_matrix[i * M + k] * mult[k * M2 + j];
+                temp += this->m_matrix[i * M + k] * mult.m_matrix[k * M2 + j];
             }
             result[i * M2 + j] = temp;
         }
@@ -321,42 +319,6 @@ constexpr Matrix<T, N, M>& Matrix<T, N, M>::operator= (const Matrix<T, N, M>& co
     return *this;
 }
 
-
-template <typename T0, size_t N0, size_t M0>
-std::ostream& operator<<(std::ostream& os, const Matrix<T0, N0, M0>& out) 
-{
-    if constexpr (N0 == 1)
-    {
-        os << "Output for N = 1\n";
-        for (size_t j = 0; j < M0; j++)
-            os << out.m_matrix[j] << ' ';
-        os << '\n';
-        return os;
-    }
-    else if constexpr (M0 == 1)
-    {
-        os << "Output for M = 1\n";
-        for (size_t i = 0; i < N0; i++)
-            os << out.m_matrix[i] << '\n';
-        return os;
-    }
-    else
-    {
-      //  os << "Output for else\n";
-        for (size_t i = 0; i < N0; i++)
-        {
-            for (size_t j = 0; j < M0; j++)
-            {
-                //auto temp = out.m_matrix[i];
-                os << out.m_matrix[i * M0 + j] << ' ';
-
-            }
-            os << '\n';
-        }
-        return os;
-    }
-}
-
 template <typename T, size_t N, size_t M>
 template<typename T2, size_t N2, size_t M2>
 int Matrix<T, N, M>::operator ==(const Matrix<T2, N2, M2>& i_matrix)
@@ -369,7 +331,7 @@ int Matrix<T, N, M>::operator ==(const Matrix<T2, N2, M2>& i_matrix)
     {
         for (size_t i = 0; i < N*M; i++)
         {
-            if (this->m_matrix[i] != i_matrix[i])
+            if (this->m_matrix[i] != i_matrix.m_matrix[i])
                 return 0;
 
         }
@@ -404,3 +366,38 @@ Matrix<T, M, N> Matrix<T, N, M>::Transpose()
     }
 }
 
+
+template <typename T0, size_t N0, size_t M0>
+std::ostream& operator<<(std::ostream& os, const Matrix<T0, N0, M0>& out)
+{
+    if constexpr (N0 == 1)
+    {
+        os << "Output for N = 1\n";
+        for (size_t j = 0; j < M0; j++)
+            os << out.m_matrix[j] << ' ';
+        os << '\n';
+        return os;
+    }
+    else if constexpr (M0 == 1)
+    {
+        os << "Output for M = 1\n";
+        for (size_t i = 0; i < N0; i++)
+            os << out.m_matrix[i] << '\n';
+        return os;
+    }
+    else
+    {
+        //  os << "Output for else\n";
+        for (size_t i = 0; i < N0; i++)
+        {
+            for (size_t j = 0; j < M0; j++)
+            {
+                //auto temp = out.m_matrix[i];
+                os << out.m_matrix[i * M0 + j] << ' ';
+
+            }
+            os << '\n';
+        }
+        return os;
+    }
+}
