@@ -10,13 +10,21 @@ int main()
     constexpr int m = 3;
 
     Matrix<int, n, m> a;
-    Matrix<float, n, m> b;
-    Matrix<double, m, n> c;
+   // Matrix<float, n, m> b;
+    //Matrix<double, m, n> c;
+
+    //auto aa =(a[1])[0];
+
+  
 
     for (size_t i = 0; i < a.Height(); i++)
         for (size_t j = 0; j < a.Width(); j++)
             a[i * a.Width() + j] = 1;
 
+    std::cout << "----------------------------" << std::endl
+        << "a =\n" << a << std::endl;
+
+ /*
     for (size_t i = 0; i < b.Height(); i++)
         for (size_t j = 0; j < b.Width(); j++)
             b[i * b.Width() + j] = static_cast<float>(1.f * ((i + 1) + (j + 5)) / ((i % (j+1)) + 1));
@@ -57,5 +65,5 @@ int main()
 
     std::cout << "----------------------------" << std::endl
         << "Determinant of d: \n" << d.Determinant() << std::endl;
-    return 0;
+    return 0;*/
 }

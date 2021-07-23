@@ -1,5 +1,4 @@
 #pragma once
-#pragma once
 
 #include <iostream>
 #include <sstream>
@@ -11,15 +10,17 @@
 
 template <typename T, size_t N, size_t M>
 class Matrix {
+    template <typename T0, size_t N0, size_t M0>friend class Matrix;
+
+   // friend std::ostream& operator<<(std::ostream& os, const Matrix<T, N, M>& out);
 private:
     std::array<T, N* M> m_matrix;
 public:
 
+
+
     Matrix() = default;
     ~Matrix() = default;
-
-    const T& operator[] (size_t i) const;
-    T& operator[] (size_t i);
 
     //operation with scalars
     template <typename T2, typename = std::enable_if_t<std::is_arithmetic_v<T2>>>
@@ -73,7 +74,38 @@ public:
     constexpr T  Determinant() const;
 
     Matrix<T, M, N> Transpose();
+
+
+    //const T& operator[] (size_t i) const
+    //{
+    //    return m_matrix[i];
+    //}
+
+    //T& operator[] (size_t i)
+    //{
+    //    return m_matrix[i];
+    //}
+
+    const T& operator[] (size_t i) const;
+    T& operator[] (size_t i);
+
+    template <typename T0, size_t N0, size_t M0>
+    friend std::ostream& operator<<(std::ostream& os, const Matrix<T0, N0, M0>& out);
 };
+
+template <typename T, size_t N, size_t M>
+const T& Matrix<T, N, M>::operator[](size_t i) const
+{
+    return m_matrix[i];
+}
+
+template <typename T, size_t N, size_t M>
+T& Matrix<T, N, M>::operator[](size_t i)
+{
+    return m_matrix[i];
+}
+
+
 
 
 
@@ -289,49 +321,40 @@ constexpr Matrix<T, N, M>& Matrix<T, N, M>::operator= (const Matrix<T, N, M>& co
     return *this;
 }
 
-template <typename T, size_t N, size_t M>
-const T& Matrix<T, N, M>::operator[](size_t i) const
+
+template <typename T0, size_t N0, size_t M0>
+std::ostream& operator<<(std::ostream& os, const Matrix<T0, N0, M0>& out) 
 {
-    return m_matrix[i];
-}
-
-template <typename T, size_t N, size_t M>
-T& Matrix<T, N, M>::operator[](size_t i)
-{
-    return m_matrix[i];
-}
-
-
-
-template <typename T, size_t N, size_t M>
-std::ostream& operator<<(std::ostream& os, const Matrix<T, N, M>& out)
-{
-    if constexpr (N == 1)
+    if constexpr (N0 == 1)
     {
         os << "Output for N = 1\n";
-        for (size_t j = 0; j < M; j++)
-            os << out[j] << ' ';
+        for (size_t j = 0; j < M0; j++)
+            os << out.m_matrix[j] << ' ';
         os << '\n';
+        return os;
     }
-    else if constexpr (M == 1)
+    else if constexpr (M0 == 1)
     {
         os << "Output for M = 1\n";
-        for (size_t i = 0; i < N; i++)
-            os << out[i] << '\n';
+        for (size_t i = 0; i < N0; i++)
+            os << out.m_matrix[i] << '\n';
+        return os;
     }
     else
     {
       //  os << "Output for else\n";
-        for (size_t i = 0; i < N; i++)
+        for (size_t i = 0; i < N0; i++)
         {
-            for (size_t j = 0; j < M; j++)
-                os << out[i * M + j] << ' ';
+            for (size_t j = 0; j < M0; j++)
+            {
+                //auto temp = out.m_matrix[i];
+                os << out.m_matrix[i * M0 + j] << ' ';
+
+            }
             os << '\n';
         }
+        return os;
     }
-    
-
-    return os;
 }
 
 template <typename T, size_t N, size_t M>
