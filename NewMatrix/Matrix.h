@@ -91,6 +91,12 @@ public:
     const T& operator[] (size_t i) const;
     T& operator[] (size_t i);
 
+    //template <typename = typename std::enable_if<N == 1>::type>
+    //T& operator[] (size_t i);
+
+    //template <typename = typename std::enable_if<N != 1>::type>
+    //Matrix<T, 1, M> operator[] (size_t i);
+
     template <typename T0, size_t N0, size_t M0>
     friend std::ostream& operator<<(std::ostream& os, const Matrix<T0, N0, M0>& out);
 };
@@ -106,6 +112,25 @@ T& Matrix<T, N, M>::operator[](size_t i)
 {
     return m_matrix[i];
 }
+
+//template <typename T, size_t N, size_t M>
+//template <typename = typename std::enable_if<N == 1>::type>
+//T& operator[] (size_t i)
+//{
+//    return this->m_matrix[i];
+//}
+//
+//template <typename T, size_t N, size_t M>
+//template <typename = typename std::enable_if<N != 1>::type>
+//Matrix<T, 1, M> operator[] (size_t i)
+//{
+//    Matrix<T, 1, M> result;
+//    for (size_t j = 0; j < M; j++)
+//    {
+//        result[j] = this->m_matrix[i * M + j];
+//    }
+//    return result;
+//}
 
 template <typename T, size_t N, size_t M>
 constexpr size_t Matrix<T, N, M>::Height() const
@@ -159,7 +184,7 @@ constexpr auto Matrix<T, N, M>::operator+ (const T2 number)
     Matrix<resultType, N, M> result;
     for (int i = 0; i < N * M; ++i)
     {
-        result[i] = this->m_matrix[i] + number;
+        result.m_matrix[i] = this->m_matrix[i] + number;
     }
 
     return result;
@@ -173,7 +198,7 @@ constexpr auto Matrix<T, N, M>::operator- (const T2 number)
     Matrix<resultType, N, M> result;
     for (int i = 0; i < N * M; ++i)
     {
-        result[i] = this->m_matrix[i] - number;
+        result.m_matrix[i] = this->m_matrix[i] - number;
     }
 
     return result;
@@ -187,7 +212,7 @@ constexpr auto Matrix<T, N, M>::operator* (const T2 number)
     Matrix<resultType, N, M> result;
     for (int i = 0; i < N * M; ++i)
     {
-        result[i] = this->m_matrix[i] * number;
+        result.m_matrix[i] = this->m_matrix[i] * number;
     }
 
     return result;
@@ -201,7 +226,7 @@ constexpr auto Matrix<T, N, M>::operator/ (const T2 number)
     Matrix<resultType, N, M> result;
     for (int i = 0; i < N * M; ++i)
     {
-        result[i] = this->m_matrix[i] / number;
+        result.m_matrix[i] = this->m_matrix[i] / number;
     }
 
     return result;
@@ -267,7 +292,7 @@ auto Matrix<T, N, M>::operator+ (const Matrix<T2, N, M>& add)
     Matrix<resultType, N, M> result;
 
     for (int i = 0; i < N * M; ++i)
-        result[i] = this->m_matrix[i] + add.m_matrix[i];
+        result.m_matrix[i] = this->m_matrix[i] + add.m_matrix[i];
 
     return result;
 }
@@ -280,7 +305,7 @@ auto Matrix<T, N, M>::operator- (const Matrix<T2, N, M>& sub)
     Matrix<resultType, N, M> result;
 
     for (int i = 0; i < N * M; ++i)
-        result[i] = this->m_matrix[i] - sub.m_matrix[i];
+        result.m_matrix[i] = this->m_matrix[i] - sub.m_matrix[i];
 
     return result;
 }
@@ -302,11 +327,9 @@ auto Matrix<T, N, M>::operator*(const Matrix<T2, M, M2>& mult)
             temp = 0;
             for (size_t k = 0; k < M; k++)
             {
-                T temp1 = this->m_matrix[i * M + k];
-                T2 temp2 = mult[k * M2 + j];
                 temp += this->m_matrix[i * M + k] * mult.m_matrix[k * M2 + j];
             }
-            result[i * M2 + j] = temp;
+            result.m_matrix[i * M2 + j] = temp;
         }
     }
     return result;
@@ -346,22 +369,17 @@ Matrix<T, M, N> Matrix<T, N, M>::Transpose()
     {
         Matrix<T, M, N> result;
         for (size_t i = 0; i < M*N; i++)
-            result[i] = this->m_matrix[i];
+            result.m_matrix[i] = this->m_matrix[i];
         
-        return result;
+        return result.m_matrix;
     }
     else
     {
         Matrix<T, M, N> result;
         for (size_t i = 0; i < N; i++)
             for (size_t j = 0; j < M; j++)
-            {
-                size_t oldInd = i * M + j;
-                size_t newInd = j * N + i;
-                result[j * N + i] = this->m_matrix[i * M + j];
-            }
-                
-
+                result.m_matrix[j * N + i] = this->m_matrix[i * M + j];
+            
         return result;
     }
 }
