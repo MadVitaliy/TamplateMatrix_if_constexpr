@@ -5,6 +5,7 @@
 #include <string>
 #include <array>
 #include <type_traits>
+#include <typeinfo> 
 
 
 
@@ -16,11 +17,53 @@ class Matrix {
     //T2, N2, M2
 
 private:
+    class Row;
+
     std::array<T, N* M> m_matrix;
+    std::array<Row, N> m_rows;
 public:
+    
+    class Row
+    {
+    private:
+        T* mp_start = nullptr;
+    public:
+        //explicit Row(T* ip_start) : mp_start(ip_start) {}
+        //~Row() {}
+        void setPointer(T* ip_start)
+        {
+            mp_start = ip_start;
+        }
+
+        T& operator[](size_t index)
+        {
+            return *(mp_start + index);  //now index can be chacked and exception can be thrown if index < M
+        }
+    
+
+    };
+
     Matrix() noexcept
     {
         m_matrix.fill(0);
+        T* p_rawData = m_matrix.data();
+      /*  std::cout << "Construcor Matrix<" << typeid(T).name()
+            << "," << N << "," << M << ">" << std::endl;*/
+
+        for (size_t i = 0; i < N; i++)
+        {
+          //  m_raws = Row(p_rawData + i);
+            m_rows[i].setPointer(p_rawData + i*M);
+        }
+        for (size_t i = 0; i < N; i++)
+        {
+            for (size_t j = 0; j < M; j++)
+            {
+                m_rows[i][j] = j+1;
+            }
+
+        }
+
     };
     ~Matrix() = default;
 
@@ -77,60 +120,16 @@ public:
 
     Matrix<T, M, N> Transpose();
 
-
-    //const T& operator[] (size_t i) const
-    //{
-    //    return m_matrix[i];
-    //}
-
-    //T& operator[] (size_t i)
-    //{
-    //    return m_matrix[i];
-    //}
-
-    const T& operator[] (size_t i) const;
-    T& operator[] (size_t i);
-
-    //template <typename = typename std::enable_if<N == 1>::type>
-    //T& operator[] (size_t i);
-
-    //template <typename = typename std::enable_if<N != 1>::type>
-    //Matrix<T, 1, M> operator[] (size_t i);
-
     template <typename T0, size_t N0, size_t M0>
     friend std::ostream& operator<<(std::ostream& os, const Matrix<T0, N0, M0>& out);
+
+    Row& operator[] (size_t row) 
+    {
+        return m_rows[row]; //now index can be chacked and exception can be thrown if row < N
+    }
+
 };
 
-template <typename T, size_t N, size_t M>
-const T& Matrix<T, N, M>::operator[](size_t i) const
-{
-    return m_matrix[i];
-}
-
-template <typename T, size_t N, size_t M>
-T& Matrix<T, N, M>::operator[](size_t i)
-{
-    return m_matrix[i];
-}
-
-//template <typename T, size_t N, size_t M>
-//template <typename = typename std::enable_if<N == 1>::type>
-//T& operator[] (size_t i)
-//{
-//    return this->m_matrix[i];
-//}
-//
-//template <typename T, size_t N, size_t M>
-//template <typename = typename std::enable_if<N != 1>::type>
-//Matrix<T, 1, M> operator[] (size_t i)
-//{
-//    Matrix<T, 1, M> result;
-//    for (size_t j = 0; j < M; j++)
-//    {
-//        result[j] = this->m_matrix[i * M + j];
-//    }
-//    return result;
-//}
 
 template <typename T, size_t N, size_t M>
 constexpr size_t Matrix<T, N, M>::Height() const

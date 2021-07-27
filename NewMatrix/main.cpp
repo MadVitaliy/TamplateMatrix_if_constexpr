@@ -13,21 +13,31 @@ int main()
     Matrix<float, n, m> b;
     Matrix<double, m, n> c;
 
-    for (size_t i = 0; i < a.Height(); i++)
-        for (size_t j = 0; j < a.Width(); j++)
-            a[i * a.Width() + j] = 1;
+
+    auto aa = a[0][0];
 
     std::cout << "----------------------------" << std::endl
         << "a =\n" << a << std::endl;
 
+    std::cout << "----------------------------" << std::endl
+        << "aa =\n" << aa << std::endl;
+
+    for (size_t i = 0; i < a.Height(); i++)
+        for (size_t j = 0; j < a.Width(); j++)
+            a[i][j] = 1;
  
     for (size_t i = 0; i < b.Height(); i++)
         for (size_t j = 0; j < b.Width(); j++)
-            b[i * b.Width() + j] = static_cast<float>(1.f * ((i + 1) + (j + 5)) / ((i % (j+1)) + 1));
+            b[i][j] = static_cast<float>(1.f * ((i + 1) + (j + 5)) / ((i % (j+1)) + 1));
 
     for (size_t i = 0; i < c.Height(); i++)
         for (size_t j = 0; j < c.Width(); j++)
-            c[i * c.Width() + j] = static_cast<double>((i + 1) % (j + 3));
+            c[i][j] = static_cast<double>((i + 1) % (j + 3));
+
+    std::cout << "----------------------------" << std::endl
+        << "a =\n" << a << std::endl
+        << "b =\n" << b << std::endl
+        << "c =\n" << c << std::endl;
 
     std::cout << "----------------------------" << std::endl
              << "a =\n" << a << std::endl
@@ -52,7 +62,8 @@ int main()
 
     for (size_t i = 0; i < a.Height(); i++)
         for (size_t j = 0; j < a.Width(); j++)
-            a[i * a.Width() + j] = static_cast<int>((j+i) % (i + 6));
+            a[i][j] = static_cast<int>((j+i) % (i + 6));
+
     auto d = c * a;
     std::cout << "----------------------------" << std::endl
            << "a =\n" << a << std::endl
