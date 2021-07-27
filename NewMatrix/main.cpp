@@ -17,10 +17,8 @@ int main()
     auto aa = a[0][0];
 
     std::cout << "----------------------------" << std::endl
-        << "a =\n" << a << std::endl;
-
-    std::cout << "----------------------------" << std::endl
-        << "aa =\n" << aa << std::endl;
+        << "a =\n" << a << std::endl
+        << "aa = a[0][0] =\n" << aa << std::endl;
 
     for (size_t i = 0; i < a.Height(); i++)
         for (size_t j = 0; j < a.Width(); j++)

@@ -30,41 +30,12 @@ public:
     public:
         //explicit Row(T* ip_start) : mp_start(ip_start) {}
         //~Row() {}
-        void setPointer(T* ip_start)
-        {
-            mp_start = ip_start;
-        }
+        constexpr void setPointer(T* ip_start);
 
-        T& operator[](size_t index)
-        {
-            return *(mp_start + index);  //now index can be chacked and exception can be thrown if index < M
-        }
-    
-
+        constexpr T& operator[](size_t index);
     };
 
-    Matrix() noexcept
-    {
-        m_matrix.fill(0);
-        T* p_rawData = m_matrix.data();
-      /*  std::cout << "Construcor Matrix<" << typeid(T).name()
-            << "," << N << "," << M << ">" << std::endl;*/
-
-        for (size_t i = 0; i < N; i++)
-        {
-          //  m_raws = Row(p_rawData + i);
-            m_rows[i].setPointer(p_rawData + i*M);
-        }
-        for (size_t i = 0; i < N; i++)
-        {
-            for (size_t j = 0; j < M; j++)
-            {
-                m_rows[i][j] = j+1;
-            }
-
-        }
-
-    };
+    Matrix() noexcept;
     ~Matrix() = default;
 
     //operation with scalars
@@ -130,6 +101,38 @@ public:
 
 };
 
+template <typename T, size_t N, size_t M>
+constexpr void Matrix<T, N, M>::Row::setPointer(T* ip_start)
+{
+    mp_start = ip_start;
+}
+
+template <typename T, size_t N, size_t M>
+constexpr T& Matrix<T, N, M>::Row::operator[](size_t index)
+{
+    return *(mp_start + index);  //now index can be chacked and exception can be thrown if index < M
+}
+
+template <typename T, size_t N, size_t M>
+Matrix<T, N, M>::Matrix() noexcept
+{
+    m_matrix.fill(0);
+    T* p_rawData = m_matrix.data();
+    std::cout << "Construcor Matrix<" << typeid(T).name()
+        << "," << N << "," << M << ">" << std::endl;
+
+    for (size_t i = 0; i < N; i++)
+    {
+        //  m_raws = Row(p_rawData + i);
+        m_rows[i].setPointer(p_rawData + i * M);
+    }
+    for (size_t i = 0; i < N; i++)
+    {
+        for (size_t j = 0; j < M; j++)
+            m_rows[i][j] = j + 1;
+    }
+
+};
 
 template <typename T, size_t N, size_t M>
 constexpr size_t Matrix<T, N, M>::Height() const
