@@ -126,12 +126,6 @@ Matrix<T, N, M>::Matrix() noexcept
         //  m_raws = Row(p_rawData + i);
         m_rows[i].setPointer(p_rawData + i * M);
     }
-    for (size_t i = 0; i < N; i++)
-    {
-        for (size_t j = 0; j < M; j++)
-            m_rows[i][j] = j + 1;
-    }
-
 };
 
 template <typename T, size_t N, size_t M>
